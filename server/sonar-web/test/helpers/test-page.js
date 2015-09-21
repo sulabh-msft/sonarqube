@@ -52,6 +52,21 @@ define(function (require) {
     });
   };
 
+  Command.prototype.waitForDeletedByCssSelector = function (selector) {
+    return new this.constructor(this, function () {
+      return this.parent
+          .then(pollUntil(function (selector) {
+            var elements = document.querySelectorAll(selector);
+            return elements.length === 0 ? true : null;
+          }, [selector], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to fail to find elements by selector "' + selector + '"');
+          });
+    });
+  };
+
   Command.prototype.checkElementInclude = function (selector, text) {
     return new this.constructor(this, function () {
       return this.parent
@@ -93,12 +108,19 @@ define(function (require) {
   Command.prototype.clickElement = function (selector) {
     return new this.constructor(this, function () {
       return this.parent
-          .checkElementExist(selector)
-          .sleep(250)
-          .findByCssSelector(selector)
-          .click()
-          .end()
-          .sleep(250);
+          .then(pollUntil(function (selector) {
+            var elements = document.querySelectorAll(selector);
+            if (elements.length > 0) {
+                jQuery(selector).click();
+                return true;
+            }
+            return null;
+          }, [selector], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+          });
     });
   };
 
