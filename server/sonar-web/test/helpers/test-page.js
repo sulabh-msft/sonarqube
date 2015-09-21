@@ -195,7 +195,7 @@ define(function (require) {
           .then(function () {
 
           }, function () {
-            assert.fail(null, null, 'failed to change elements by selector "' + selector + '"');
+            assert.fail(null, null, 'failed to fill elements by selector "' + selector + '"');
           });
     });
   };
