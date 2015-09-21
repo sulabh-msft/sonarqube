@@ -79,6 +79,7 @@ import org.sonar.server.computation.qualityprofile.ActiveRulesHolderImpl;
 import org.sonar.server.computation.source.LastCommitVisitor;
 import org.sonar.server.computation.sqale.SqaleMeasuresVisitor;
 import org.sonar.server.computation.sqale.SqaleRatingSettings;
+import org.sonar.server.computation.sqale.SqaleNewMeasuresVisitor;
 import org.sonar.server.computation.step.ComputationSteps;
 import org.sonar.server.computation.step.ReportComputationSteps;
 import org.sonar.server.view.index.ViewIndex;
@@ -167,6 +168,7 @@ public final class ReportComputeEngineContainerPopulator implements ContainerPop
       IntegrateIssuesVisitor.class,
       CloseIssuesOnRemovedComponentsVisitor.class,
       SqaleMeasuresVisitor.class,
+      SqaleNewMeasuresVisitor.class,
       LastCommitVisitor.class,
       MeasureComputersVisitor.class,
 
