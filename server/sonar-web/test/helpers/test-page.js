@@ -119,7 +119,7 @@ define(function (require) {
           .then(function () {
 
           }, function () {
-            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+            assert.fail(null, null, 'failed to click by selector "' + selector + '"');
           });
     });
   };
@@ -130,7 +130,7 @@ define(function (require) {
           .then(pollUntil(function (selector) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).first().mouseup();
+                jQuery(selector).mouseup();
                 return true;
             }
             return null;
@@ -138,7 +138,7 @@ define(function (require) {
           .then(function () {
 
           }, function () {
-            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+            assert.fail(null, null, 'failed to mouseUp by selector "' + selector + '"');
           });
     });
   };
@@ -157,12 +157,12 @@ define(function (require) {
           .then(function () {
 
           }, function () {
-            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+            assert.fail(null, null, 'failed to trigger by selector "' + selector + '"');
           });
     });
   };
 
-  Command.prototype.change = function (selector) {
+  Command.prototype.changeElement = function (selector) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector) {
@@ -176,7 +176,7 @@ define(function (require) {
           .then(function () {
 
           }, function () {
-            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+            assert.fail(null, null, 'failed to change elements by selector "' + selector + '"');
           });
     });
   };
@@ -184,18 +184,19 @@ define(function (require) {
   Command.prototype.fillElement = function (selector, value) {
     return new this.constructor(this, function () {
       return this.parent
-          .execute(function (selector, value) {
-            jQuery(selector).val(value);
-          }, [selector, value]);
-    });
-  };
+          .then(pollUntil(function (selector, value) {
+            var elements = document.querySelectorAll(selector);
+            if (elements.length > 0) {
+                jQuery(selector).val(value);
+                return true;
+            }
+            return null;
+          }, [selector, value], DEFAULT_TIMEOUT))
+          .then(function () {
 
-  Command.prototype.changeElement = function (selector) {
-    return new this.constructor(this, function () {
-      return this.parent
-          .execute(function (selector) {
-            jQuery(selector).change();
-          }, [selector]);
+          }, function () {
+            assert.fail(null, null, 'failed to change elements by selector "' + selector + '"');
+          });
     });
   };
 
