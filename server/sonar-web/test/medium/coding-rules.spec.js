@@ -483,10 +483,7 @@ define(function (require) {
           { data: { available_since: '2014-12-01' } })
           .clickElement('[data-property="available_since"] .js-facet-toggle')
           .fillElement('[data-property="available_since"] input', '2014-12-01')
-          .execute(function () {
-            // TODO do not use jQuery
-            jQuery('[data-property="available_since"] input').change();
-          })
+          .change('[data-property="available_since"] input')
           .checkElementInclude('#coding-rules-total', '101');
     });
 
@@ -721,19 +718,13 @@ define(function (require) {
           .clickElement('[data-property="languages"] .select2-choice')
           .checkElementExist('.select2-search')
           .fillElement('.select2-input', 'custom')
-          .execute(function () {
-            // TODO remove jQuery usage
-            jQuery('.select2-input').trigger('keyup-change');
-          })
+          .trigger('.select2-input', 'keyup-change')
           .checkElementExist('.select2-result')
           .checkElementInclude('.select2-result', 'Custom')
           .clearMocks()
           .mockFromFile('/api/rules/search', 'coding-rules-spec/search-with-custom-language.json',
           { data: { languages: 'custom' } })
-          .execute(function () {
-            // TODO remove jQuery usage
-            jQuery('.select2-result').mouseup();
-          })
+          .mouseUp('.select2-result')
           .checkElementInclude('#coding-rules-total', 13)
           .checkElementExist('[data-property="languages"] .js-facet.active')
           .checkElementInclude('[data-property="languages"] .js-facet.active', 'custom')

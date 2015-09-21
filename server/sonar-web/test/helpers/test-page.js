@@ -124,6 +124,63 @@ define(function (require) {
     });
   };
 
+  Command.prototype.mouseUp = function (selector) {
+    return new this.constructor(this, function () {
+      return this.parent
+          .then(pollUntil(function (selector) {
+            var elements = document.querySelectorAll(selector);
+            if (elements.length > 0) {
+                jQuery(selector).mouseup();
+                return true;
+            }
+            return null;
+          }, [selector], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+          });
+    });
+  };
+
+  Command.prototype.trigger = function (selector, what) {
+    return new this.constructor(this, function () {
+      return this.parent
+          .then(pollUntil(function (selector, what) {
+            var elements = document.querySelectorAll(selector);
+            if (elements.length > 0) {
+                jQuery(selector).trigger(what);
+                return true;
+            }
+            return null;
+          }, [selector, what], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+          });
+    });
+  };
+
+  Command.prototype.change = function (selector) {
+    return new this.constructor(this, function () {
+      return this.parent
+          .then(pollUntil(function (selector) {
+            var elements = document.querySelectorAll(selector);
+            if (elements.length > 0) {
+                jQuery(selector).change();
+                return true;
+            }
+            return null;
+          }, [selector], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to find elements by selector "' + selector + '"');
+          });
+    });
+  };
+
   Command.prototype.fillElement = function (selector, value) {
     return new this.constructor(this, function () {
       return this.parent
