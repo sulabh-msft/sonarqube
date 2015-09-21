@@ -483,7 +483,7 @@ define(function (require) {
           { data: { available_since: '2014-12-01' } })
           .clickElement('[data-property="available_since"] .js-facet-toggle')
           .fillElement('[data-property="available_since"] input', '2014-12-01')
-          .change('[data-property="available_since"] input')
+          .changeElement('[data-property="available_since"] input')
           .checkElementInclude('#coding-rules-total', '101');
     });
 
