@@ -109,9 +109,9 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector) {
-            var elements = document.querySelectorAll(selector);
-            if (elements.length > 0) {
-                jQuery(selector).first().click();
+            var elements = jQuery(selector);
+            if (elements.size() > 0) {
+                elements.first().click();
                 return true;
             }
             return null;
@@ -128,9 +128,9 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector) {
-            var elements = document.querySelectorAll(selector);
-            if (elements.length > 0) {
-                jQuery(selector).mouseup();
+            var elements = jQuery(selector);
+            if (elements.size() > 0) {
+                elements.mouseup();
                 return true;
             }
             return null;
@@ -147,9 +147,9 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector, what) {
-            var elements = document.querySelectorAll(selector);
-            if (elements.length > 0) {
-                jQuery(selector).trigger(what);
+            var elements = jQuery(selector);
+            if (elements.size() > 0) {
+                elements.trigger(what);
                 return true;
             }
             return null;
@@ -166,9 +166,9 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector) {
-            var elements = document.querySelectorAll(selector);
-            if (elements.length > 0) {
-                jQuery(selector).change();
+            var elements = jQuery(selector);
+            if (elements.size() > 0) {
+                elements.change();
                 return true;
             }
             return null;
@@ -185,10 +185,8 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector, value) {
-            var elements = document.querySelectorAll(selector);
-            if (elements.length > 0) {
-                jQuery(selector).val(value);
-                return true;
+            if (jQuery(selector).val(value) != []) {
+              return true;
             }
             return null;
           }, [selector, value], DEFAULT_TIMEOUT))
