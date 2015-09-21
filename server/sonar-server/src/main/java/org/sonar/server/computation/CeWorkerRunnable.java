@@ -26,14 +26,14 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.core.util.logs.Profiler;
 import org.sonar.db.ce.CeActivityDto;
 
-public class CeWorkerImpl implements CeWorker {
+class CeWorkerRunnable implements Runnable {
 
-  private static final Logger LOG = Loggers.get(CeWorkerImpl.class);
+  private static final Logger LOG = Loggers.get(CeWorkerRunnable.class);
 
   private final CeQueue queue;
   private final ReportTaskProcessor reportTaskProcessor;
 
-  public CeWorkerImpl(CeQueue queue, ReportTaskProcessor reportTaskProcessor) {
+  public CeWorkerRunnable(CeQueue queue, ReportTaskProcessor reportTaskProcessor) {
     this.queue = queue;
     this.reportTaskProcessor = reportTaskProcessor;
   }
@@ -41,18 +41,24 @@ public class CeWorkerImpl implements CeWorker {
   @Override
   public void run() {
     Profiler profiler = Profiler.create(LOG).start();
-    CeTask task;
-    try {
-      Optional<CeTask> taskOpt = queue.peek();
-      if (!taskOpt.isPresent()) {
-        return;
-      }
-      task = taskOpt.get();
-    } catch (Exception e) {
-      LOG.error("Failed to pop the queue of analysis reports", e);
+    Optional<CeTask> ceTask = tryAndFindTaskToExecute();
+    if (!ceTask.isPresent()) {
       return;
     }
 
+    executeTask(profiler, ceTask.get());
+  }
+
+  private Optional<CeTask> tryAndFindTaskToExecute() {
+    try {
+      return queue.peek();
+    } catch (Exception e) {
+      LOG.error("Failed to pop the queue of analysis reports", e);
+    }
+    return Optional.absent();
+  }
+
+  private void executeTask(Profiler profiler, CeTask task) {
     try {
       reportTaskProcessor.process(task);
       queue.remove(task, CeActivityDto.Status.SUCCESS);
