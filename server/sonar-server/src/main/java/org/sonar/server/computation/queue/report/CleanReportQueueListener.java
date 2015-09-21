@@ -17,33 +17,23 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.server.computation;
+package org.sonar.server.computation.queue.report;
 
-import org.junit.Test;
 import org.sonar.db.ce.CeActivityDto;
-import org.sonar.db.ce.CeTaskTypes;
+import org.sonar.server.computation.ReportFiles;
+import org.sonar.server.computation.queue.CeQueueListener;
+import org.sonar.server.computation.queue.CeTask;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+public class CleanReportQueueListener implements CeQueueListener {
 
-public class CleanReportQueueListenerTest {
+  private final ReportFiles reportFiles;
 
-  ReportFiles reportFiles = mock(ReportFiles.class);
-  CleanReportQueueListener underTest = new CleanReportQueueListener(reportFiles);
-
-  @Test
-  public void remove_report_file_if_success() {
-    CeTask task = new CeTask("TASK_1", CeTaskTypes.REPORT, "PROJECT_1", null);
-
-    underTest.onRemoved(task, CeActivityDto.Status.SUCCESS);
-    verify(reportFiles).deleteIfExists("TASK_1");
+  public CleanReportQueueListener(ReportFiles reportFiles) {
+    this.reportFiles = reportFiles;
   }
 
-  @Test
-  public void remove_report_file_if_failure() {
-    CeTask task = new CeTask("TASK_1", CeTaskTypes.REPORT, "PROJECT_1", null);
-
-    underTest.onRemoved(task, CeActivityDto.Status.FAILED);
-    verify(reportFiles).deleteIfExists("TASK_1");
+  @Override
+  public void onRemoved(CeTask task, CeActivityDto.Status status) {
+    reportFiles.deleteIfExists(task.getUuid());
   }
 }

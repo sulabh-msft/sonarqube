@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.sonar.api.config.Settings;
 import org.sonar.api.server.ServerSide;
 import org.sonar.process.ProcessProperties;
+import org.sonar.server.computation.queue.TaskSubmission;
 
 import static java.lang.String.format;
 

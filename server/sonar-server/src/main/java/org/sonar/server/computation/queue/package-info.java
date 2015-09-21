@@ -17,27 +17,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.server.computation;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+@ParametersAreNonnullByDefault
+package org.sonar.server.computation.queue;
 
-public interface TaskSubmission {
-
-  String getUuid();
-
-  String getType();
-
-  TaskSubmission setType(String s);
-
-  @CheckForNull
-  String getComponentUuid();
-
-  TaskSubmission setComponentUuid(@Nullable String s);
-
-  @CheckForNull
-  String getSubmitterLogin();
-
-  TaskSubmission setSubmitterLogin(@Nullable String s);
-
-}
+import javax.annotation.ParametersAreNonnullByDefault;

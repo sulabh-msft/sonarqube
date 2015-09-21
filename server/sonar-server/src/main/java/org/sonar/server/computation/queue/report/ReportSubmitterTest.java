@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.server.computation;
+package org.sonar.server.computation.queue.report;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Description;
@@ -29,6 +29,12 @@ import org.sonar.db.ce.CeTaskTypes;
 import org.sonar.db.component.ComponentDto;
 import org.sonar.server.component.ComponentService;
 import org.sonar.server.component.NewComponent;
+import org.sonar.server.computation.ReportFiles;
+import org.sonar.server.computation.queue.CeQueue;
+import org.sonar.server.computation.queue.CeQueueImpl;
+import org.sonar.server.computation.queue.TaskSubmission;
+import org.sonar.server.computation.queue.TestTaskSubmission;
+import org.sonar.server.computation.queue.report.ReportSubmitter;
 import org.sonar.server.tester.UserSessionRule;
 
 import static org.mockito.Matchers.any;
@@ -42,24 +48,24 @@ public class ReportSubmitterTest {
   @Rule
   public UserSessionRule userSession = UserSessionRule.standalone();
 
-  CeQueue queue = mock(CeQueueImpl.class);
-  ReportFiles reportFiles = mock(ReportFiles.class);
-  ComponentService componentService = mock(ComponentService.class);
+  CeQueue queue = Mockito.mock(CeQueueImpl.class);
+  ReportFiles reportFiles = Mockito.mock(ReportFiles.class);
+  ComponentService componentService = Mockito.mock(ComponentService.class);
   ReportSubmitter underTest = new ReportSubmitter(queue, userSession, reportFiles, componentService);
 
   @Test
   public void submit_a_report_on_existing_project() {
-    when(queue.prepareSubmit()).thenReturn(new TestTaskSubmission("TASK_1"));
+    Mockito.when(queue.prepareSubmit()).thenReturn(new TestTaskSubmission("TASK_1"));
     userSession.setGlobalPermissions(GlobalPermissions.SCAN_EXECUTION);
-    when(componentService.getNullableByKey("MY_PROJECT")).thenReturn(new ComponentDto().setUuid("P1"));
+    Mockito.when(componentService.getNullableByKey("MY_PROJECT")).thenReturn(new ComponentDto().setUuid("P1"));
 
     underTest.submit("MY_PROJECT", null, "My Project", IOUtils.toInputStream("{binary}"));
 
-    verify(queue).submit(argThat(new TypeSafeMatcher<TaskSubmission>() {
+    Mockito.verify(queue).submit(Matchers.argThat(new TypeSafeMatcher<TaskSubmission>() {
       @Override
       protected boolean matchesSafely(TaskSubmission submit) {
         return submit.getType().equals(CeTaskTypes.REPORT) && submit.getComponentUuid().equals("P1") &&
-          submit.getUuid().equals("TASK_1");
+            submit.getUuid().equals("TASK_1");
       }
 
       @Override
@@ -71,18 +77,18 @@ public class ReportSubmitterTest {
 
   @Test
   public void provision_project_if_does_not_exist() throws Exception {
-    when(queue.prepareSubmit()).thenReturn(new TestTaskSubmission("TASK_1"));
+    Mockito.when(queue.prepareSubmit()).thenReturn(new TestTaskSubmission("TASK_1"));
     userSession.setGlobalPermissions(GlobalPermissions.SCAN_EXECUTION, GlobalPermissions.PROVISIONING);
-    when(componentService.getNullableByKey("MY_PROJECT")).thenReturn(null);
-    when(componentService.create(any(NewComponent.class))).thenReturn(new ComponentDto().setUuid("P1"));
+    Mockito.when(componentService.getNullableByKey("MY_PROJECT")).thenReturn(null);
+    Mockito.when(componentService.create(Matchers.any(NewComponent.class))).thenReturn(new ComponentDto().setUuid("P1"));
 
     underTest.submit("MY_PROJECT", null, "My Project", IOUtils.toInputStream("{binary}"));
 
-    verify(queue).submit(argThat(new TypeSafeMatcher<TaskSubmission>() {
+    Mockito.verify(queue).submit(Matchers.argThat(new TypeSafeMatcher<TaskSubmission>() {
       @Override
       protected boolean matchesSafely(TaskSubmission submit) {
         return submit.getType().equals(CeTaskTypes.REPORT) && submit.getComponentUuid().equals("P1") &&
-          submit.getUuid().equals("TASK_1");
+            submit.getUuid().equals("TASK_1");
       }
 
       @Override

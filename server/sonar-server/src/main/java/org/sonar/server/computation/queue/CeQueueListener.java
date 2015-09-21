@@ -17,10 +17,12 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.server.computation;
+package org.sonar.server.computation.queue;
 
-public interface CeProcessingScheduler {
+import org.sonar.db.ce.CeActivityDto;
 
-  void startScheduling();
+public interface CeQueueListener {
+
+  void onRemoved(CeTask task, CeActivityDto.Status status);
 
 }
