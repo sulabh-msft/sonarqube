@@ -5,7 +5,7 @@ define(function (require) {
   var Command = require('intern/dojo/node!leadfoot/Command');
   var pollUntil = require('intern/dojo/node!leadfoot/helpers/pollUntil');
 
-  var DEFAULT_TIMEOUT = 4000;
+  var DEFAULT_TIMEOUT = 30000;
 
   Command.prototype.checkElementCount = function (selector, count) {
     return new this.constructor(this, function () {
@@ -111,7 +111,7 @@ define(function (require) {
           .then(pollUntil(function (selector) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).click();
+                jQuery(selector).first().click();
                 return true;
             }
             return null;
@@ -130,7 +130,7 @@ define(function (require) {
           .then(pollUntil(function (selector) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).mouseup();
+                jQuery(selector).first().mouseup();
                 return true;
             }
             return null;
@@ -149,7 +149,7 @@ define(function (require) {
           .then(pollUntil(function (selector, what) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).trigger(what);
+                jQuery(selector).first().trigger(what);
                 return true;
             }
             return null;
@@ -168,7 +168,7 @@ define(function (require) {
           .then(pollUntil(function (selector) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).change();
+                jQuery(selector).first().change();
                 return true;
             }
             return null;
