@@ -149,7 +149,7 @@ define(function (require) {
           .then(pollUntil(function (selector, what) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).first().trigger(what);
+                jQuery(selector).trigger(what);
                 return true;
             }
             return null;
@@ -168,7 +168,7 @@ define(function (require) {
           .then(pollUntil(function (selector) {
             var elements = document.querySelectorAll(selector);
             if (elements.length > 0) {
-                jQuery(selector).first().change();
+                jQuery(selector).change();
                 return true;
             }
             return null;
