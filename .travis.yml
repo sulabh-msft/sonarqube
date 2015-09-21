@@ -5,15 +5,16 @@ jdk: oraclejdk7
 script: ./travis.sh
 
 env:
-  - JOB=H2
-  - JOB=POSTGRES
-  - JOB=MYSQL
-  - JOB=WEB
-  - JOB=ITS IT_CATEGORY=batch
-  - JOB=ITS IT_CATEGORY=plugins
-  - JOB=ITS IT_CATEGORY=issue_analysis
-  - JOB=ITS IT_CATEGORY=administration_qualitygate
-  - JOB=ITS IT_CATEGORY=server_updatecenter
+  - JOB=WEB UNUSED=000
+  - JOB=WEB UNUSED=001
+  - JOB=WEB UNUSED=002
+  - JOB=WEB UNUSED=003
+  - JOB=WEB UNUSED=004
+  - JOB=WEB UNUSED=005
+  - JOB=WEB UNUSED=006
+  - JOB=WEB UNUSED=007
+  - JOB=WEB UNUSED=008
+  - JOB=WEB UNUSED=009
 
 matrix:
   fast_finish: true
