@@ -56,6 +56,7 @@ var App = new Marionette.Application(),
         key.setScope('list');
         App.router = new Router({ app: App });
         Backbone.history.start();
+        window.done = true;
       });
     };
 

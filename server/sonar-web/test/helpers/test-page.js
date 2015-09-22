@@ -264,7 +264,7 @@ define(function (require) {
               App.start(_.extend({ el: '#content' }, options));
             });
           }, [app, options]);
-      if ((app === 'custom-measures') || (app === 'users')) {
+      if ((app === 'custom-measures') || (app === 'users') || (app === 'issues')) {
         promise = promise.waitDone();
       }
       return promise;
