@@ -32,7 +32,9 @@ var App = new Marionette.Application(),
       this.layout.listFooterRegion.show(this.listFooterView);
 
       // Go!
-      this.users.fetch();
+      this.users.fetch().done(function(){
+        window.done = true;
+      });
     };
 
 App.on('start', function (options) {

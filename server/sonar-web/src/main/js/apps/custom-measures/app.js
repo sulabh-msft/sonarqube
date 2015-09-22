@@ -38,7 +38,9 @@ var App = new Marionette.Application(),
       this.layout.listFooterRegion.show(this.listFooterView);
 
       // Go!
-      this.customMeasures.fetch();
+      this.customMeasures.fetch().done(function(){
+        window.done = true;
+      });
     };
 
 App.on('start', function (options) {

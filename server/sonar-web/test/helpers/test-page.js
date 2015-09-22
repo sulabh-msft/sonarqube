@@ -7,6 +7,20 @@ define(function (require) {
 
   var DEFAULT_TIMEOUT = 30000;
 
+  Command.prototype.waitDone = function (selector) {
+    return new this.constructor(this, function () {
+      return this.parent
+          .then(pollUntil(function (selector) {
+            return window.done ? true : null;
+          }, [selector], DEFAULT_TIMEOUT))
+          .then(function () {
+
+          }, function () {
+            assert.fail(null, null, 'failed to wait for window.done');
+          });
+    });
+  };
+
   Command.prototype.checkElementCount = function (selector, count) {
     return new this.constructor(this, function () {
       return this.parent
@@ -110,11 +124,12 @@ define(function (require) {
       return this.parent
           .then(pollUntil(function (selector) {
             var elements = jQuery(selector);
-            if (elements.size() > 0) {
-                elements.first().click();
-                return true;
+            if (elements.size() === 0) {
+              return undefined;
             }
-            return null;
+
+            var result = elements.first().click();
+            return true;
           }, [selector], DEFAULT_TIMEOUT))
           .then(function () {
 
@@ -129,11 +144,12 @@ define(function (require) {
       return this.parent
           .then(pollUntil(function (selector) {
             var elements = jQuery(selector);
-            if (elements.size() > 0) {
-                elements.mouseup();
-                return true;
+            if (elements.size() === 0) {
+              return undefined;
             }
-            return null;
+
+            elements.mouseup();
+            return true;
           }, [selector], DEFAULT_TIMEOUT))
           .then(function () {
 
@@ -148,11 +164,12 @@ define(function (require) {
       return this.parent
           .then(pollUntil(function (selector, what) {
             var elements = jQuery(selector);
-            if (elements.size() > 0) {
-                elements.trigger(what);
-                return true;
+            if (elements.size() === 0) {
+              return undefined;
             }
-            return null;
+
+            elements.trigger(what);
+            return true;
           }, [selector, what], DEFAULT_TIMEOUT))
           .then(function () {
 
@@ -167,11 +184,12 @@ define(function (require) {
       return this.parent
           .then(pollUntil(function (selector) {
             var elements = jQuery(selector);
-            if (elements.size() > 0) {
-                elements.change();
-                return true;
+            if (elements.size() === 0) {
+              return undefined;
             }
-            return null;
+
+            elements.change();
+            return true;
           }, [selector], DEFAULT_TIMEOUT))
           .then(function () {
 
@@ -185,10 +203,13 @@ define(function (require) {
     return new this.constructor(this, function () {
       return this.parent
           .then(pollUntil(function (selector, value) {
-            if (jQuery(selector).val(value) != []) {
-              return true;
+            var elements = jQuery(selector);
+            if (elements.size() === 0) {
+              return undefined;
             }
-            return null;
+
+            elements.val(value);
+            return true;
           }, [selector, value], DEFAULT_TIMEOUT))
           .then(function () {
 
@@ -237,12 +258,16 @@ define(function (require) {
 
   Command.prototype.startApp = function (app, options) {
     return new this.constructor(this, function () {
-      return this.parent
+      var promise = this.parent
           .execute(function (app, options) {
             require(['apps/' + app + '/app'], function (App) {
               App.start(_.extend({ el: '#content' }, options));
             });
           }, [app, options]);
+      if ((app === 'custom-measures') || (app === 'users')) {
+        promise = promise.waitDone();
+      }
+      return promise;
     });
   };
 
