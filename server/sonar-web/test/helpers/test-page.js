@@ -242,8 +242,7 @@ define(function (require) {
             require(['apps/' + app + '/app'], function (App) {
               App.start(_.extend({ el: '#content' }, options));
             });
-          }, [app, options])
-          .sleep(1000);
+          }, [app, options]);
     });
   };
 
